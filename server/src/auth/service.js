@@ -78,7 +78,7 @@ export const userLogin = async ({ email, password,}) => {
       f_name: user.f_name,
       l_name: user.l_name,
       email: user.email,
-      role:user.role
+      role:user.role,
     },
   };
 };

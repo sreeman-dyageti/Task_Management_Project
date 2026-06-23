@@ -1,4 +1,4 @@
-import { createTask, getMyTasks } from "./task.service.js";
+import { createTask, getMyTasks, getAllTasks, deleteTask, getAllUsers } from "./task.service.js";
 
 // validation 
 export const addTask = async(req, res) =>{
@@ -45,4 +45,48 @@ export const myTasks = async (req, res) => {
   }
 };
 
+// Admin View all tasks
+export const allTasks = async (req, res) => {
+  try {
+    const tasks = await getAllTasks();
+    return res.status(200).json({
+       success: true, 
+       tasks });
+  } catch (error) {
+    return res.status(500).json({ 
+      error: error.message 
+    });
+  }
+};
 
+// Admin Delete a task
+export const removeTask = async (req, res) => {
+  try {
+    const { task_id } = req.params;
+    const deleted = await deleteTask(task_id);
+
+    if (!deleted) {
+      return res.status(404).json({
+         error: "Task not found"
+         });
+    }
+
+    return res.status(200).json({ 
+      success: true, 
+      deleted });
+  } catch (error) {
+    return res.status(500).json({
+       error: error.message 
+      });
+  }
+};
+
+// Admin View all users
+export const allUsers = async (req, res) => {
+  try {
+    const users = await getAllUsers();
+    return res.status(200).json({ success: true, users });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
