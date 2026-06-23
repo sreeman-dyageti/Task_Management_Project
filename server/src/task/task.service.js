@@ -1,10 +1,29 @@
 import { query } from "../../db/db.js";
 
 // Create Task
-export const createTask = async ({ user_id, title, description}) => {
+export const createTask = async ({ user_id, title, description, priority, due_date }) => {
+  const result = await query(`INSERT INTO tasks (user_id, title, description, priority, due_date)
+     VALUES ($1, $2, $3, $4, $5)
+     RETURNING *`,
+    [user_id, title, description, priority || 'medium', due_date || null]
+  );
+  return result.rows[0];
+};
 
-  const result = await query(` INSERT INTO tasks (user_id, title, description) VALUES ($1, $2, $3) RETURNING *`,
-    [user_id, title, description]
+// update task
+export const updateTask = async (task_id, fields) => {
+  if (!fields || typeof fields !== 'object') {
+    throw new Error("No update fields provided");
+  }
+
+  const { title, description, priority, status, due_date } = fields;
+  const result = await query( `UPDATE tasks SET title = COALESCE($1, title), description = COALESCE($2, description),
+         priority = COALESCE($3, priority),
+         status = COALESCE($4, status),
+         due_date = COALESCE($5, due_date)
+     WHERE task_id = $6
+     RETURNING *`,
+    [title, description, priority, status, due_date, task_id]
   );
 
   return result.rows[0];
