@@ -51,7 +51,7 @@ export default function Register(){
               <input type="text" name="f_name"
                 value={form.f_name}
                 onChange={handleChange}
-                placeholder="John"
+                placeholder="Sreeman"
                 className="w-full bg-gray-800 text-white rounded-lg px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
                 required
               />
@@ -61,7 +61,7 @@ export default function Register(){
               <input type="text" name="l_name"
                 value={form.l_name}
                 onChange={handleChange}
-                placeholder="Doe"
+                placeholder="Dyageti"
                 className="w-full bg-gray-800 text-white rounded-lg px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
                 required
               />

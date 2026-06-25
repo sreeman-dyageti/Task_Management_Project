@@ -10,6 +10,7 @@ import Dashboard from './pages/Dashboard'
 import TaskList from './pages/TaskList'
 import CreateTask from './pages/CreateTask'
 import EditTask from './pages/EditTask'
+import ProtectedRoute from './components/ProtectedRoute'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -18,10 +19,22 @@ createRoot(document.getElementById('root')).render(
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/tasks" element={<TaskList />} />
-          <Route path="/tasks/create" element={<CreateTask />} />
-          <Route path="/tasks/edit/:task_id" element={<EditTask />} />
+
+          <Route path="/dashboard" element={
+            <ProtectedRoute><Dashboard /></ProtectedRoute>
+          } />
+          <Route path="/tasks" element={
+            <ProtectedRoute><TaskList adminView={false} /></ProtectedRoute>
+          } />
+          <Route path="/tasks/all" element={
+            <ProtectedRoute><TaskList adminView={true} /></ProtectedRoute>
+          } />
+          <Route path="/tasks/create" element={
+            <ProtectedRoute><CreateTask /></ProtectedRoute>
+          } />
+          <Route path="/tasks/edit/:task_id" element={
+            <ProtectedRoute><EditTask /></ProtectedRoute>
+          } />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

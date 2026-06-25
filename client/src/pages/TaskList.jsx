@@ -11,9 +11,9 @@ const priorityColors = {
 };
 
 const statusColors = {
-  pending:      'bg-gray-500/20 text-gray-400',
+  pending:       'bg-gray-500/20 text-gray-400',
   'in-progress': 'bg-blue-500/20 text-blue-400',
-  completed:    'bg-green-500/20 text-green-400',
+  completed:     'bg-green-500/20 text-green-400',
 };
 
 export default function TaskList({ adminView }) {
@@ -22,6 +22,11 @@ export default function TaskList({ adminView }) {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [expanded, setExpanded] = useState({});
+
+  const toggleExpand = (task_id) => {
+    setExpanded(prev => ({ ...prev, [task_id]: !prev[task_id] }));
+  };
 
   useEffect(() => {
     if (!user) { navigate('/'); return; }
@@ -91,52 +96,66 @@ export default function TaskList({ adminView }) {
           {tasks.map(task => (
             <div
               key={task.task_id}
-              className="bg-gray-900 border border-gray-800 rounded-2xl px-6 py-4 flex items-center justify-between gap-4"
+              className="bg-gray-900 border border-gray-800 rounded-2xl px-6 py-4"
             >
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="text-white font-medium truncate">{task.title}</h3>
-                </div>
-                {task.description && (
-                  <p className="text-gray-400 text-sm truncate">{task.description}</p>
-                )}
-                {user?.role === 'admin' && adminView && task.f_name &&(
-                  <p className="text-gray-500 text-xs mt-1">
-                    {task.f_name} {task.l_name} · {task.email}
-                  </p>
-                )}
-              </div>
+              {/* Top row — title, badges, buttons */}
+              <div className="flex items-center justify-between gap-4">
+                <p className="text-white font-medium truncate flex-1 min-w-0">
+                  {task.title}
+                </p>
 
-              <div className="flex items-center gap-2 shrink-0">
-                <span className={`text-xs px-2 py-1 rounded-full ${priorityColors[task.priority]}`}>
-                  {task.priority}
-                </span>
-                <span className={`text-xs px-2 py-1 rounded-full ${statusColors[task.status]}`}>
-                  {task.status}
-                </span>
-                {task.due_date && (
-                  <span className="text-xs text-gray-500">
-                    {new Date(task.due_date).toLocaleDateString()}
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className={`text-xs px-2 py-1 rounded-full ${priorityColors[task.priority]}`}>
+                    {task.priority}
                   </span>
-                )}
+                  <span className={`text-xs px-2 py-1 rounded-full ${statusColors[task.status]}`}>
+                    {task.status}
+                  </span>
+                  {task.due_date && (
+                    <span className="text-xs text-gray-500">
+                      {new Date(task.due_date).toLocaleDateString()}
+                    </span>
+                  )}
+                  <button
+                    onClick={() => navigate(`/tasks/edit/${task.task_id}`)}
+                    className="text-xs bg-gray-800 hover:bg-gray-700 text-white px-3 py-1.5 rounded-lg transition"
+                  >
+                    Edit
+                  </button>
+                  {user?.role === 'admin' && (
+                    <button
+                      onClick={() => handleDelete(task.task_id)}
+                      className="text-xs bg-red-500/10 hover:bg-red-500/20 text-red-400 px-3 py-1.5 rounded-lg transition"
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
               </div>
 
-              <div className="flex gap-2 shrink-0">
-                <button
-                  onClick={() => navigate(`/tasks/edit/${task.task_id}`)}
-                  className="text-xs bg-gray-800 hover:bg-gray-700 text-white px-3 py-1.5 rounded-lg transition"
-                >
-                  Edit
-                </button>
-                {user?.role === 'admin' && (
-                  <button
-                    onClick={() => handleDelete(task.task_id)}
-                    className="text-xs bg-red-500/10 hover:bg-red-500/20 text-red-400 px-3 py-1.5 rounded-lg transition"
-                  >
-                    Delete
-                  </button>
-                )}
-              </div>
+              {/* Description + show more */}
+              {task.description && (
+                <div className="mt-1">
+                  <p className={`text-gray-400 text-sm ${expanded[task.task_id] ? '' : 'line-clamp-1'}`}>
+                    {task.description}
+                  </p>
+                  {task.description.length > 80 && (
+                    <button
+                      onClick={() => toggleExpand(task.task_id)}
+                      className="text-indigo-400 text-xs hover:underline mt-0.5"
+                    >
+                      {expanded[task.task_id] ? 'Show less' : 'Show more'}
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {/* Admin user info */}
+              {user?.role === 'admin' && adminView && task.f_name && (
+                <p className="text-gray-500 text-xs mt-1">
+                  {task.f_name} {task.l_name} · {task.email}
+                </p>
+              )}
             </div>
           ))}
         </div>

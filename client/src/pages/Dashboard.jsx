@@ -11,6 +11,7 @@ const StatCard = ({ label, value, color }) => (
   </div>
 );
 
+
 const priorityColors = {
   high:   'bg-red-500/20 text-red-400',
   medium: 'bg-yellow-500/20 text-yellow-400',
@@ -29,11 +30,15 @@ export default function Dashboard() {
   const [stats, setStats] = useState({ total: 0, pending: 0, completed: 0, high: 0 });
   const [recentTasks, setRecentTasks] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [expanded, setExpanded] = useState({});
   useEffect(() => {
     if (!user) { navigate('/'); return; }
     fetchData();
   }, []);
+
+const toggleExpand = (task_id) => {
+  setExpanded(prev => ({ ...prev, [task_id]: !prev[task_id] }));
+};
 
   const fetchData = async () => {
     try {
@@ -115,17 +120,13 @@ export default function Dashboard() {
               ) : (
                 <div className="space-y-3">
                   {recentTasks.map(task => (
-                    <div
-                      key={task.task_id}
-                      className="bg-gray-900 border border-gray-800 rounded-2xl px-6 py-4 flex items-center justify-between gap-4"
-                    >
-                      <div className="flex-1 min-w-0">
-                        <p className="text-white font-medium truncate">{task.title}</p>
-                        {task.description && (
-                          <p className="text-gray-400 text-sm truncate">{task.description}</p>
-                        )}
-                      </div>
-
+                  <div
+                    key={task.task_id}
+                    className="bg-gray-900 border border-gray-800 rounded-2xl px-6 py-4"
+                  >
+                    {/* Top row — title + badges + edit */}
+                    <div className="flex items-center justify-between gap-4 mb-1">
+                      <p className="text-white font-medium truncate">{task.title}</p>
                       <div className="flex items-center gap-2 shrink-0">
                         <span className={`text-xs px-2 py-1 rounded-full ${priorityColors[task.priority]}`}>
                           {task.priority}
@@ -133,15 +134,32 @@ export default function Dashboard() {
                         <span className={`text-xs px-2 py-1 rounded-full ${statusColors[task.status]}`}>
                           {task.status}
                         </span>
+                        <button
+                          onClick={() => navigate(`/tasks/edit/${task.task_id}`)}
+                          className="text-xs bg-gray-800 hover:bg-gray-700 text-white px-3 py-1.5 rounded-lg transition"
+                        >
+                          Edit
+                        </button>
                       </div>
-
-                      <button
-                        onClick={() => navigate(`/tasks/edit/${task.task_id}`)}
-                        className="text-xs bg-gray-800 hover:bg-gray-700 text-white px-3 py-1.5 rounded-lg transition shrink-0"
-                      >
-                        Edit
-                      </button>
                     </div>
+
+                    {/* Description + show more */}
+                    {task.description && (
+                      <div>
+                        <p className={`text-gray-400 text-sm ${expanded[task.task_id] ? '' : 'line-clamp-1'}`}>
+                          {task.description}
+                        </p>
+                        {task.description.length > 80 && (
+                          <button
+                            onClick={() => toggleExpand(task.task_id)}
+                            className="text-indigo-400 text-xs hover:underline mt-1"
+                          >
+                            {expanded[task.task_id] ? 'Show less' : 'Show more'}
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </div>
                   ))}
                 </div>
               )}
