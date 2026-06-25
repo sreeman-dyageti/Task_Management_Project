@@ -57,6 +57,7 @@ export const register = async ( req,res) => {
 
 // Login
 export const login = async (req,res) => {
+ 
   try {
     const { email, password } = req.body;
 

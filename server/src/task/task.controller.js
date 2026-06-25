@@ -10,10 +10,19 @@ export const addTask = async (req, res) => {
       return res.status(400).json({ error: "Title is required" });
     }
 
+    const validStatuses = ["pending", "in-progress", "completed"];
+    if (status && !validStatuses.includes(status)) {
+    return res.status(400).json({ error: "Invalid status" });
+    }
+
     const validPriorities = ["low", "medium", "high"];
     if (priority && !validPriorities.includes(priority)) {
       return res.status(400).json({ error: "Priority must be low, medium, or high" });
     }
+
+    if (due_date && isNaN(Date.parse(due_date))) {
+    return res.status(400).json({ error: "Invalid due date" });
+  }
 
     const task = await createTask({
       user_id: req.user.user_id,
@@ -44,6 +53,14 @@ export const editMyTask = async (req, res) => {
       return res.status(403).json({ error: "Task not found or not yours" });
     }
 
+    const validStatuses = ["pending", "in-progress", "completed"];
+    if (status && !validStatuses.includes(status)) {
+      return res.status(400).json({ error: "Invalid status" });
+    }
+    if (due_date && isNaN(Date.parse(due_date))) {
+      return res.status(400).json({ error: "Invalid due date" });
+    }
+
     const updated = await updateTask(task_id, req.body);
     return res.status(200).json({ success: true, updated });
   } catch (error) {
@@ -57,7 +74,7 @@ export const myTasks = async (req, res) => {
   try {
     const tasks = await getMyTasks(req.user.user_id);
 
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
       tasks,
     });
@@ -123,6 +140,14 @@ export const editAnyTask = async (req, res) => {
 
     if (!updated) {
       return res.status(404).json({ error: "Task not found" });
+    }
+
+    const validStatuses = ["pending", "in-progress", "completed"];
+    if (status && !validStatuses.includes(status)) {
+      return res.status(400).json({ error: "Invalid status" });
+    }
+    if (due_date && isNaN(Date.parse(due_date))) {
+      return res.status(400).json({ error: "Invalid due date" });
     }
 
     return res.status(200).json({ success: true, updated });
