@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import taskRouter from "./src/task/task.router.js";
 import authRouter from "./src/auth/route.js";
-
+import projectRouter from "./src/project/project.router.js";
 dotenv.config();
 
 const app = express();
@@ -16,6 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/auth", authRouter);
 app.use("/tasks", taskRouter);
+app.use('/project', projectRouter);
 
 const PORT = process.env.PORT || 3000;
 
