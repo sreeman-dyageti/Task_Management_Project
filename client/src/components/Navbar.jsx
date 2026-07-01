@@ -89,7 +89,10 @@ export default function Navbar() {
           </button>
         </div>
       </div>
+  
 
+
+  
       {/* Mobile dropdown menu */}
       {menuOpen && (
         <div className="md:hidden mt-3 pb-2 border-t border-white/10 pt-3 space-y-1">
