@@ -1,6 +1,6 @@
 import { createProject,getMyProject,hasProjectAccess,getProjectMembers,removeMember,
      getProjectById, isProjectOwener, userExists, addMember, isProjectMember} from "./project.service.js";
-
+import { logActivity } from "../activity/activity.service.js";
 
 
 // validation 
@@ -20,6 +20,13 @@ try {
         created_by: req.user.user_id
     });
 
+    await logActivity({
+    user_id: req.user.user_id,
+    event_type: "PROJECT_CREATED",
+    description: `Project "${result.project.project_name}" was created`,
+    project_id: result.project.project_id,
+    });
+
     return res.status(201).json(result);
 
 } catch (err) {
@@ -31,7 +38,7 @@ try {
 }
 };
 
-// get project
+// get projects
 export const myProjects = async (req,res)=>{
     try {
        const projects = await getMyProject(req.user.user_id); 
@@ -113,6 +120,12 @@ export const addProjectMember = async (req, res) => {
         }
 
         await addMember(project_id, user_id);
+        await logActivity({
+            user_id: req.user.user_id,
+            event_type: "MEMBER_ADDED",
+            description: `User ${user_id} was added to project ${project_id}`,
+            project_id: parseInt(project_id),
+        });
 
         return res.status(201).json({
             success:true, 
