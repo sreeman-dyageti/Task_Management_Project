@@ -1,12 +1,11 @@
 import { query } from "../../db/db.js";
 
 // Create Task
-export const createTask = async ({ user_id, title, description, priority, due_date }) => {
-  const result = await query(`INSERT INTO tasks (user_id, title, description, priority, due_date)
-     VALUES ($1, $2, $3, $4, $5)
+export const createTask = async ({ user_id, title, description, priority, due_date, project_id, assigned_to }) => {
+  const result = await query(`INSERT INTO tasks (user_id, title, description, priority,due_date, project_id, assigned_to)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)
      RETURNING *`,
-    [user_id, title, description, priority || 'medium', due_date || null]
-  );
+    [user_id, title, description, priority || 'medium',due_date || null, project_id || null, assigned_to || user_id] );
   return result.rows[0];
 };
 
@@ -58,4 +57,44 @@ export const getAllUsers = async () => {
      ORDER BY created_at DESC`
   );
   return result.rows;
+};
+
+// get tasks assign
+export const getAssignedTasks = async (user_id) =>{
+  const result = await query(
+    `SELECT tasks.*, 
+            u.f_name AS assigned_f_name, u.l_name AS assigned_l_name,
+            p.project_name
+     FROM tasks
+     LEFT JOIN users u ON tasks.assigned_to = u.user_id
+     LEFT JOIN projects p ON tasks.project_id = p.project_id
+     WHERE tasks.assigned_to = $1
+     ORDER BY tasks.created_at DESC`,
+    [user_id]
+  );
+  return result.rows;
+};
+
+// get all task (project)
+
+export const getProjectTasks = async(project_id) =>{
+  const result = await query(`SELECT tasks.*,
+            creator.f_name AS creator_f_name, creator.l_name AS creator_l_name,
+            assignee.f_name AS assigned_f_name, assignee.l_name AS assigned_l_name,
+            p.project_name
+     FROM tasks
+     LEFT JOIN users creator ON tasks.user_id = creator.user_id
+     LEFT JOIN users assignee ON tasks.assigned_to = assignee.user_id
+     LEFT JOIN projects p ON tasks.project_id = p.project_id
+     WHERE tasks.project_id = $1
+     ORDER BY tasks.created_at DESC`,
+    [project_id]);
+    return result.rows;
+};
+
+// ressign a task to another user
+export const reassignTask = async (task_id, assigned_to ) =>{
+  const result = await query (    `UPDATE tasks SET assigned_to = $1 WHERE task_id = $2 RETURNING *`,
+    [assigned_to, task_id]);
+    return result.rows[0];
 };
