@@ -35,10 +35,8 @@ export default function Dashboard() {
         ? '/dashboard/admin-analytics'
         : '/dashboard/my-analytics';
 
-      const [metricsRes, activityRes] = await Promise.all([
-        api.get(endpoint),
-        api.get('/activity/task/0').catch(() => ({ data: { logs: [] } })), // fallback if no global feed
-      ]);
+     const metricsRes = await api.get(endpoint);
+     setMetrics(metricsRes.data.metrics);
 
       setMetrics(metricsRes.data.metrics);
 
@@ -68,7 +66,7 @@ export default function Dashboard() {
         {/* Welcome Card */}
         <Card className="p-6 md:p-8 mb-6 bg-gradient-to-r from-mustard/10 to-transparent">
           <h1 className="text-2xl md:text-3xl font-bold text-dark">
-            Welcome back, {user?.f_name} 👋
+            Welcome back, {user?.f_name}
           </h1>
           <p className="text-muted text-sm mt-1">
             Here's what's happening {user?.role === 'admin' ? 'across your team' : 'with your tasks'}

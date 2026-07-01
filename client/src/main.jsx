@@ -10,6 +10,8 @@ import Dashboard from './pages/Dashboard'
 import TaskList from './pages/TaskList'
 import CreateTask from './pages/CreateTask'
 import EditTask from './pages/EditTask'
+import Projects from './pages/Projects'
+import ProjectDetail from './pages/ProjectDetails'
 import ProtectedRoute from './components/ProtectedRoute'
 
 createRoot(document.getElementById('root')).render(
@@ -34,6 +36,12 @@ createRoot(document.getElementById('root')).render(
           } />
           <Route path="/tasks/edit/:task_id" element={
             <ProtectedRoute><EditTask /></ProtectedRoute>
+          } />
+          <Route path="/projects" element={
+            <ProtectedRoute><Projects /></ProtectedRoute>
+          } />
+          <Route path="/projects/:projectId" element={
+            <ProtectedRoute><ProjectDetail /></ProtectedRoute>
           } />
         </Routes>
       </AuthProvider>

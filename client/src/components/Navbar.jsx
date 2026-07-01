@@ -25,11 +25,11 @@ export default function Navbar() {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className="bg-[#1E1B16] px-4 md:px-6 py-3 relative">
+    <nav className="bg-dark px-4 md:px-6 py-3 relative">
       <div className="flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center gap-8">
-          <span className="text-[#D9A441] font-bold text-lg">TaskManager</span>
+          <span className="text-mustard font-bold text-lg">TaskManager</span>
 
           {/* Desktop links */}
           <div className="hidden md:flex gap-1">
@@ -39,8 +39,8 @@ export default function Navbar() {
                 to={link.to}
                 className={`text-sm px-3 py-2 rounded-lg transition ${
                   isActive(link.to)
-                    ? 'bg-[#D9A441] text-[#1E1B16] font-medium'
-                    : 'text-[#C9C2B0] hover:text-white'
+                    ? 'bg-mustard text-dark font-medium'
+                    : 'text-gray-300 hover:text-white'
                 }`}
               >
                 {link.label}
@@ -52,19 +52,19 @@ export default function Navbar() {
         {/* Right side desktop */}
         <div className="hidden md:flex items-center gap-4">
           <NotificationBell />
-          <span className="text-sm text-[#C9C2B0]">
+          <span className="text-sm text-gray-300">
             {user?.f_name} {user?.l_name}
             <span className={`ml-2 text-xs px-2 py-0.5 rounded-full ${
               user?.role === 'admin'
-                ? 'bg-[#D9A441]/20 text-[#D9A441]'
-                : 'bg-white/10 text-[#C9C2B0]'
+                ? 'bg-mustard/20 text-mustard'
+                : 'bg-white/10 text-gray-300'
             }`}>
               {user?.role}
             </span>
           </span>
           <button
             onClick={handleLogout}
-            className="text-sm text-[#C9C2B0] hover:text-red-400 transition"
+            className="text-sm text-gray-300 hover:text-red-400 transition"
           >
             Logout
           </button>
@@ -75,7 +75,7 @@ export default function Navbar() {
           <NotificationBell />
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="text-[#C9C2B0] p-1"
+            className="text-gray-300 p-1"
           >
             {menuOpen ? (
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -89,13 +89,10 @@ export default function Navbar() {
           </button>
         </div>
       </div>
-  
 
-
-  
       {/* Mobile dropdown menu */}
       {menuOpen && (
-        <div className="md:hidden mt-3 pb-2 border-t border-white/10 pt-3 space-y-1">
+        <div className="md:hidden mt-3 pb-2 border-t border-white/10 pt-3 space-y-1 animate-fade-in">
           {links.map(link => (
             <Link
               key={link.to}
@@ -103,8 +100,8 @@ export default function Navbar() {
               onClick={() => setMenuOpen(false)}
               className={`block text-sm px-3 py-2.5 rounded-lg transition ${
                 isActive(link.to)
-                  ? 'bg-[#D9A441] text-[#1E1B16] font-medium'
-                  : 'text-[#C9C2B0] hover:bg-white/5'
+                  ? 'bg-mustard text-dark font-medium'
+                  : 'text-gray-300 hover:bg-white/5'
               }`}
             >
               {link.label}
@@ -112,12 +109,12 @@ export default function Navbar() {
           ))}
 
           <div className="pt-3 mt-2 border-t border-white/10 flex items-center justify-between px-3">
-            <span className="text-sm text-[#C9C2B0]">
+            <span className="text-sm text-gray-300">
               {user?.f_name} {user?.l_name}
               <span className={`ml-2 text-xs px-2 py-0.5 rounded-full ${
                 user?.role === 'admin'
-                  ? 'bg-[#D9A441]/20 text-[#D9A441]'
-                  : 'bg-white/10 text-[#C9C2B0]'
+                  ? 'bg-mustard/20 text-mustard'
+                  : 'bg-white/10 text-gray-300'
               }`}>
                 {user?.role}
               </span>
