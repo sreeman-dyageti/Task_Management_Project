@@ -13,6 +13,9 @@ import EditTask from './pages/EditTask'
 import Projects from './pages/Projects'
 import ProjectDetail from './pages/ProjectDetails'
 import ProtectedRoute from './components/ProtectedRoute'
+import TaskDetail from './pages/TaskDetail'
+
+
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -28,14 +31,17 @@ createRoot(document.getElementById('root')).render(
           <Route path="/tasks" element={
             <ProtectedRoute><TaskList adminView={false} /></ProtectedRoute>
           } />
-          <Route path="/tasks/all" element={
-            <ProtectedRoute><TaskList adminView={true} /></ProtectedRoute>
-          } />
           <Route path="/tasks/create" element={
             <ProtectedRoute><CreateTask /></ProtectedRoute>
           } />
+          <Route path="/tasks/all" element={
+            <ProtectedRoute><TaskList adminView={true} /></ProtectedRoute>
+          } />
           <Route path="/tasks/edit/:task_id" element={
             <ProtectedRoute><EditTask /></ProtectedRoute>
+          } />
+          <Route path="/tasks/:task_id" element={
+            <ProtectedRoute><TaskDetail /></ProtectedRoute>
           } />
           <Route path="/projects" element={
             <ProtectedRoute><Projects /></ProtectedRoute>
